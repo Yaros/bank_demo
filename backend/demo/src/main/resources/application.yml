@@ -1,0 +1,36 @@
+spring:
+  application:
+    name: demo
+
+external:
+  logging:
+    url: https://tools-httpstatus.pickup-services.com
+
+resilience4j:
+  retry:
+    instances:
+      externalLogging:
+        max-attempts: 3
+        wait-duration: 500ms
+        retry-exceptions:
+          - java.io.IOException
+          - feign.RetryableException
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - health
+          - info
+  endpoint:
+    health:
+      show-details: always
+
+springdoc:
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
