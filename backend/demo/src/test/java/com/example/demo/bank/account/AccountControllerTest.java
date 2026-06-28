@@ -54,7 +54,7 @@ class AccountControllerTest {
                 "USD",
                 BigDecimal.valueOf(2000.00));
 
-        when(accountService.getAccounts(0, 20))
+        when(accountService.getAccounts(1L, 0, 20))
                 .thenReturn(new PageImpl<>(List.of(response1, response2), PageRequest.of(0, 20), 2));
 
         mockMvc.perform(get("/api/accounts"))

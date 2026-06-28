@@ -2,6 +2,9 @@ spring:
   application:
     name: demo
 
+server:
+  port: 8080
+
 external:
   logging:
     url: https://tools-httpstatus.pickup-services.com

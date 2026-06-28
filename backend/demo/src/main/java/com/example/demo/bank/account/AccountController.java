@@ -30,8 +30,7 @@ public class AccountController {
 
     private final AccountService accountService;
 
-    @Operation(summary = "Get all accounts with pagination",
-            description = "Retrieve a paginated list of all accounts. Default page is 0 and default size is 20.")
+    @Operation(summary = "Get all accounts with pagination", description = "Retrieve a paginated list of all accounts. Default page is 0 and default size is 20.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Accounts retrieved successfully")
     })
@@ -40,7 +39,13 @@ public class AccountController {
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "20") int size) {
 
-        Page<AccountResponse> pageData = accountService.getAccounts(page, size);
+        // Authentication is outside the scope. The API currently returns accounts for a
+        // mock authenticated user. The service layer is designed to accept a user ID
+        // and can be integrated with Spring Security without changes to the business
+        // logic.
+        long mockCurrentUser = 1L;
+
+        Page<AccountResponse> pageData = accountService.getAccounts(mockCurrentUser, page, size);
 
         return new PageResponse<>(
                 pageData.getContent(),
@@ -52,54 +57,45 @@ public class AccountController {
                 pageData.isLast());
     }
 
-    // TODO: is it needed or getBalance?
-    @Operation(summary = "Get account by ID",
-            description = "Retrieve an account by its unique identifier.")
+    @Operation(summary = "Get account by ID", description = "Retrieve an account by its unique identifier.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Account found"),
             @ApiResponse(responseCode = "404", description = "Account not found")
     })
-    @GetMapping("/{accountId}")
+    @GetMapping("/{id}")
     public AccountResponse getAccount(
-            @Parameter(name = "accountId", description = "The unique identifier of the account", required = true)
-            @PathVariable("accountId") Long accountId) {
+            @Parameter(name = "id", description = "The unique identifier of the account", required = true) @PathVariable("id") Long id) {
 
-        return accountService.getAccount(accountId);
+        return accountService.getAccount(id);
     }
 
-    // TODO: is it needed or getAccount?
-    @Operation(summary = "Get account balance",
-            description = "Retrieve the balance of an account by its unique identifier.")
+    @Operation(summary = "Get account balance", description = "Retrieve the balance of an account by its unique identifier.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Balance retrieved successfully"),
             @ApiResponse(responseCode = "404", description = "Account not found")
     })
-    @GetMapping("/{accountId}/balance")
+    @GetMapping("/{id}/balance")
     public AccountResponse getBalance(
-            @Parameter(name = "accountId", description = "The unique identifier of the account", required = true)
-            @PathVariable("accountId") Long accountId) {
+            @Parameter(name = "id", description = "The unique identifier of the account", required = true) @PathVariable("id") Long id) {
 
-        return accountService.getAccount(accountId);
+        return accountService.getAccount(id);
     }
 
-    @Operation(summary = "Deposit funds into an account",
-            description = "Add funds to an account by its unique identifier.")
+    @Operation(summary = "Deposit funds into an account", description = "Add funds to an account by its unique identifier.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Funds deposited successfully"),
             @ApiResponse(responseCode = "400", description = "Invalid amount"),
             @ApiResponse(responseCode = "404", description = "Account not found")
     })
-    @PostMapping("/{accountId}/deposit")
+    @PostMapping("/{id}/deposit")
     public AccountResponse deposit(
-            @Parameter(name = "accountId", description = "The unique identifier of the account", required = true)
-            @PathVariable("accountId") Long accountId,
+            @Parameter(name = "id", description = "The unique identifier of the account", required = true) @PathVariable("id") Long id,
             @Valid @RequestBody DepositRequest request) {
 
-        return accountService.deposit(accountId, request);
+        return accountService.deposit(id, request);
     }
 
-    @Operation(summary = "Debit funds from an account",
-            description = "Remove funds from an account by its unique identifier.")
+    @Operation(summary = "Debit funds from an account", description = "Remove funds from an account by its unique identifier.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Funds debited successfully"),
             @ApiResponse(responseCode = "400", description = "Insufficient funds"),
@@ -107,17 +103,15 @@ public class AccountController {
             @ApiResponse(responseCode = "404", description = "Account not found"),
             @ApiResponse(responseCode = "503", description = "External logging service unavailable")
     })
-    @PostMapping("/{accountId}/debit")
+    @PostMapping("/{id}/debit")
     public AccountResponse debit(
-            @Parameter(name = "accountId", description = "The unique identifier of the account", required = true)
-            @PathVariable("accountId") Long accountId,
+            @Parameter(name = "id", description = "The unique identifier of the account", required = true) @PathVariable("id") Long id,
             @Valid @RequestBody DebitRequest request) {
 
-        return accountService.debit(accountId, request);
+        return accountService.debit(id, request);
     }
 
-    @Operation(summary = "Exchange currency",
-            description = "Exchange currency between two accounts.")
+    @Operation(summary = "Exchange currency", description = "Exchange currency between two accounts.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Currency exchanged successfully"),
             @ApiResponse(responseCode = "400", description = "Invalid amount"),
@@ -131,20 +125,19 @@ public class AccountController {
         accountService.exchange(request);
     }
 
-    @Operation(summary = "Get transactions for an account",
-            description = "Retrieve a paginated list of transactions for an account by its unique identifier.")
+    @Operation(summary = "Get transactions for an account", description = "Retrieve a paginated list of transactions for an account by its unique identifier.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Transactions retrieved successfully"),
             @ApiResponse(responseCode = "404", description = "Account not found")
     })
-    @GetMapping("/{accountId}/transactions")
+    @GetMapping("/{id}/transactions")
     public PageResponse<TransactionResponse> getTransactions(
-            @PathVariable("accountId") Long accountId,
+            @PathVariable("id") Long id,
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "20") int size) {
 
         Page<TransactionResponse> pageData = accountService.getTransactions(
-                accountId,
+                id,
                 page,
                 size);
 

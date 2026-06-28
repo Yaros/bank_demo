@@ -12,13 +12,17 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import com.example.demo.bank.common.dto.ErrorResponse;
 import com.example.demo.bank.common.dto.ValidationErrorResponse;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(AccountNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleAccountNotFound(
-            AccountNotFoundException ex) {
+    public ErrorResponse handleAccountNotFound(AccountNotFoundException ex) {
+
+        log.warn("Account not found: {}", ex.getMessage());
 
         return new ErrorResponse(
                 "ACCOUNT_NOT_FOUND",
@@ -27,8 +31,9 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(InsufficientFundsException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleInsufficientFunds(
-            InsufficientFundsException ex) {
+    public ErrorResponse handleInsufficientFunds(InsufficientFundsException ex) {
+
+        log.warn("Insufficient funds: {}", ex.getMessage());
 
         return new ErrorResponse(
                 "INSUFFICIENT_FUNDS",
@@ -37,8 +42,9 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(AmountNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleAmountNotValid(
-            AmountNotValidException ex) {
+    public ErrorResponse handleAmountNotValid(AmountNotValidException ex) {
+
+        log.warn("Amount not valid: {}", ex.getMessage());
 
         return new ErrorResponse(
                 "AMOUNT_NOT_VALID",
@@ -47,8 +53,9 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(TransactionNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleTransactionNotFound(
-            TransactionNotFoundException ex) {
+    public ErrorResponse handleTransactionNotFound(TransactionNotFoundException ex) {
+
+        log.warn("Transaction not found: {}", ex.getMessage());
 
         return new ErrorResponse(
                 "TRANSACTION_NOT_FOUND",
@@ -57,8 +64,9 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ExternalLoggingException.class)
     @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
-    public ErrorResponse handleExternalLoggingFailure(
-            ExternalLoggingException ex) {
+    public ErrorResponse handleExternalLoggingFailure(ExternalLoggingException ex) {
+
+        log.warn("External logging failed: {}", ex.getMessage());
 
         return new ErrorResponse(
                 "EXTERNAL_LOGGING_FAILURE",
@@ -67,8 +75,9 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ConversionRateNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleConversionRateNotFound(
-            ConversionRateNotFoundException ex) {
+    public ErrorResponse handleConversionRateNotFound(ConversionRateNotFoundException ex) {
+
+        log.warn("Conversation rate not found: {}", ex.getMessage());
 
         return new ErrorResponse(
                 "CONVERSION_RATE_NOT_FOUND",
@@ -77,8 +86,9 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ValidationErrorResponse handleValidation(
-            MethodArgumentNotValidException ex) {
+    public ValidationErrorResponse handleValidation(MethodArgumentNotValidException ex) {
+
+        log.warn("Validation failed: {}", ex.getMessage());
 
         List<String> errors = ex.getBindingResult()
                 .getFieldErrors()
@@ -89,4 +99,14 @@ public class GlobalExceptionHandler {
         return new ValidationErrorResponse(errors);
     }
 
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorResponse handleException(Exception ex) {
+
+        log.error("Unexpected error", ex);
+
+        return new ErrorResponse(
+                "INTERNAL_ERROR",
+                "Unexpected server error");
+    }
 }

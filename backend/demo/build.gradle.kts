@@ -30,6 +30,7 @@ dependencies {
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.6")
 	implementation("org.mapstruct:mapstruct:1.6.3")
 	implementation("io.github.resilience4j:resilience4j-spring-boot4:2.4.0")
+    implementation("com.github.librepdf:openpdf:3.0.5")
 	compileOnly("org.projectlombok:lombok")
 	runtimeOnly("com.h2database:h2")
 	annotationProcessor("org.projectlombok:lombok")

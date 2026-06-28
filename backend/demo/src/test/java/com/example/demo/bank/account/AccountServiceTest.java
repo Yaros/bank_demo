@@ -85,19 +85,19 @@ class AccountServiceTest {
 
         Page<AccountEntity> entities = new PageImpl<>(List.of(account, second));
 
-        when(accountRepository.findAll(org.springframework.data.domain.PageRequest.of(0, 10)))
+        when(accountRepository.findByUserId(1L, org.springframework.data.domain.PageRequest.of(0, 10)))
                 .thenReturn(entities);
 
         when(accountMapper.toResponse(account)).thenReturn(r1);
         when(accountMapper.toResponse(second)).thenReturn(r2);
 
         // When
-        Page<AccountResponse> result = accountService.getAccounts(0, 10);
+        Page<AccountResponse> result = accountService.getAccounts(1L, 0, 10);
 
         // Then
         assertThat(result.getContent()).containsExactly(r1, r2);
 
-        verify(accountRepository).findAll(org.springframework.data.domain.PageRequest.of(0, 10));
+        verify(accountRepository).findByUserId(1L, org.springframework.data.domain.PageRequest.of(0, 10));
         verify(accountMapper).toResponse(account);
         verify(accountMapper).toResponse(second);
     }

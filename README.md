@@ -5,7 +5,8 @@ A workspace containing backend and frontend projects.
 ## Structure
 
 - `backend/` - Backend services
-- `frontend/` - Frontend application
+- `frontend/` - Frontend application ( [see `/frontend/bank-ui/README.md`](./frontend/bank-ui/README.md) )
+
 
 # Bank Account Management Application
 
@@ -21,6 +22,8 @@ The backend is implemented as a REST API using Java and Spring Boot. It allows u
 * Exchange funds between accounts with fixed exchange rates
 * View account balances
 * Retrieve transaction history with pagination
+
+For simplicity, authentication is out of scope. The /api/accounts endpoint returns the accounts of the current (mock) user.
 
 The application stores data in an H2 SQL database.
 

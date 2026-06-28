@@ -24,7 +24,9 @@ import com.example.demo.bank.transaction.TransactionService;
 import com.example.demo.bank.transaction.dto.TransactionResponse;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -36,8 +38,8 @@ public class AccountService {
     private final CurrencyExchangeService currencyExchangeService;
     private final ExternalLoggingService externalLoggingService;
 
-    public Page<AccountResponse> getAccounts(int page, int size) {
-        return accountRepository.findAll(PageRequest.of(page, size)).map(accountMapper::toResponse);
+    public Page<AccountResponse> getAccounts(Long userId, int page, int size) {
+        return accountRepository.findByUserId(userId, PageRequest.of(page, size)).map(accountMapper::toResponse);
     }
 
     public AccountResponse getAccount(Long accountId) {
@@ -47,6 +49,11 @@ public class AccountService {
     @Transactional
     public AccountResponse deposit(Long accountId, DepositRequest request) {
         AccountEntity account = getAccountEntity(accountId);
+
+        log.info("Depositing {} {} to account {}",
+                request.amount(),
+                account.getCurrency(),
+                accountId);
 
         validateAmount(request.amount(), account.getCurrency());
 
@@ -66,6 +73,11 @@ public class AccountService {
     @Transactional
     public AccountResponse debit(Long accountId, DebitRequest request) {
         AccountEntity account = getAccountEntity(accountId);
+
+        log.info("Withdrawing {} {} from account {}",
+                request.amount(),
+                account.getCurrency(),
+                accountId);
 
         validateAmount(request.amount(), account.getCurrency());
 
@@ -96,6 +108,11 @@ public class AccountService {
     public void exchange(ExchangeRequest request) {
         AccountEntity source = getAccountEntity(request.fromAccountId());
         AccountEntity target = getAccountEntity(request.toAccountId());
+
+        log.info("Exchanging {} from account {} to account {}",
+                request.amount(),
+                source.getId(),
+                target.getId());
 
         validateAmount(request.amount(), source.getCurrency());
 

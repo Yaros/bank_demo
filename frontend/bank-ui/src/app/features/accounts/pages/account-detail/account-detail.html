@@ -1,0 +1,96 @@
+<mat-card *ngIf="!loadingAcc() && account(); else loadingTpl">
+    <mat-card-title>
+        Account #{{ account()?.id }}
+    </mat-card-title>
+
+    <mat-card-content>
+        <p><strong>Currency:</strong> {{ account()?.currency }}</p>
+        <p><strong>Balance:</strong>
+            {{ account()?.balance | currency: account()?.currency: '' }}
+            {{account()?.currency}}
+        </p>
+    </mat-card-content>
+</mat-card>
+
+<br>
+
+<button mat-raised-button routerLink="/accounts">
+    Back to accounts
+</button>
+
+<br>
+
+<mat-card>
+    <mat-card-title>Balance History</mat-card-title>
+
+    <mat-card-content>
+        <div style="height:350px">
+            <canvas baseChart [data]="lineChartData()" [options]="lineChartOptions" type="line">
+            </canvas>
+        </div>
+    </mat-card-content>
+</mat-card>
+
+<br>
+
+<mat-card>
+    <mat-card-title>Transactions</mat-card-title>
+    <mat-card-content>
+        <div class="table-container" (scroll)="onScroll($event)">
+            <table mat-table [dataSource]="transactions()" class="tx-table"
+                *ngIf="transactions().length; else emptyTpl">
+
+                <ng-container matColumnDef="id">
+                    <th mat-header-cell *matHeaderCellDef>Id</th>
+                    <td mat-cell *matCellDef="let tx">{{ tx.id }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="type">
+                    <th mat-header-cell *matHeaderCellDef>Type</th>
+                    <td mat-cell *matCellDef="let tx">{{ tx.type }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="amount">
+                    <th mat-header-cell *matHeaderCellDef>Amount</th>
+                    <td mat-cell *matCellDef="let tx">{{ tx.amount | currency: account()?.currency: '' }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="balanceAfter">
+                    <th mat-header-cell *matHeaderCellDef>Balance After</th>
+                    <td mat-cell *matCellDef="let tx">{{ tx.balanceAfter | currency: account()?.currency: '' }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="referenceId">
+                    <th mat-header-cell *matHeaderCellDef>Reference</th>
+                    <td mat-cell *matCellDef="let tx">{{ tx.referenceId }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="createdAt">
+                    <th mat-header-cell *matHeaderCellDef>Date</th>
+                    <td mat-cell *matCellDef="let tx">{{ tx.createdAt | date:'medium' }}</td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="cols"></tr>
+                <!--<tr mat-row *matRowDef="let row; columns: cols;"></tr>-->
+
+                <tr mat-row *matRowDef="let row; columns: cols" (click)="openTransaction(row)" style="cursor:pointer">
+                </tr>
+
+            </table>
+
+            <div *ngIf="loadingTx()" class="loading">
+                Loading...
+            </div>
+
+            <ng-template #emptyTpl>
+                <p>No transactions found</p>
+            </ng-template>
+        </div>
+    </mat-card-content>
+</mat-card>
+
+<ng-template #loadingTpl>
+    <div style="display:flex; justify-content:center; margin-top:40px;">
+        <mat-spinner></mat-spinner>
+    </div>
+</ng-template>

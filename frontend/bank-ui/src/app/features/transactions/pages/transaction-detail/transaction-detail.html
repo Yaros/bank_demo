@@ -1,0 +1,58 @@
+@if (loading()) {
+
+<div class="spinner">
+    <mat-spinner></mat-spinner>
+</div>
+
+} @else if (transaction(); as tx) {
+
+<mat-card>
+    <mat-card-title>
+        Transaction #{{ tx.id }}
+    </mat-card-title>
+
+    <mat-card-content>
+
+        <p>
+            <strong>Type:</strong>
+            {{ tx.type }}
+        </p>
+
+        <p>
+            <strong>Amount:</strong>
+            {{ tx.amount | currency: currency: ''}}
+            {{currency}}
+        </p>
+
+        <p>
+            <strong>Balance after:</strong>
+            {{ tx.balanceAfter | currency: currency: '' }}
+            {{currency}}
+        </p>
+
+        <p>
+            <strong>Reference:</strong>
+            {{ tx.referenceId || '-' }}
+        </p>
+
+        <p>
+            <strong>Date:</strong>
+            {{ tx.createdAt | date:'medium' }}
+        </p>
+
+    </mat-card-content>
+</mat-card>
+
+<br>
+
+<button mat-raised-button color="primary" (click)="downloadPdf()">
+    Download PDF
+</button>
+
+<br>
+
+<button mat-raised-button [routerLink]="['/accounts', accountId]">
+    Back to account #{{ accountId }}
+</button>
+
+}

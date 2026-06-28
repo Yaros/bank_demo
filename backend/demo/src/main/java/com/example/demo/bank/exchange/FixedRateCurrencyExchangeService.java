@@ -1,5 +1,7 @@
 package com.example.demo.bank.exchange;
 
+import static java.math.RoundingMode.HALF_EVEN;
+
 import java.math.BigDecimal;
 import java.util.Currency;
 import java.util.Map;
@@ -40,6 +42,6 @@ public class FixedRateCurrencyExchangeService implements CurrencyExchangeService
 
         Map<Currency, BigDecimal> ratesFrom = RATES.get(from);
         BigDecimal rate = ratesFrom == null ? null : ratesFrom.get(to);
-        return rate == null ? null : amount.multiply(rate);
+        return rate == null ? null : amount.multiply(rate).setScale(to.getDefaultFractionDigits(), HALF_EVEN);
     }
 }
