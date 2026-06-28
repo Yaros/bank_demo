@@ -101,14 +101,17 @@ java -jar build/libs/demo.jar
 
 After starting the application:
 
-* Health status:
-  `http://localhost:8080/actuator/health`
-
 * Swagger UI:
   `http://localhost:8080/swagger-ui.html`
 
 * OpenAPI:
   `http://localhost:8080/v3/api-docs`
+
+## Health status
+
+After starting the application:
+
+  `http://localhost:8080/actuator/health`
 
 ## Database
 
