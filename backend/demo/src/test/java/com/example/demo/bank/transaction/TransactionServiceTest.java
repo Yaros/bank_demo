@@ -25,6 +25,7 @@ import org.springframework.data.domain.PageRequest;
 import com.example.demo.bank.account.AccountEntity;
 import com.example.demo.bank.common.domain.TransactionType;
 import com.example.demo.bank.common.exception.TransactionNotFoundException;
+import com.example.demo.bank.transaction.dto.TransactionDetailResponse;
 import com.example.demo.bank.transaction.dto.TransactionResponse;
 
 @ExtendWith(MockitoExtension.class)
@@ -83,7 +84,7 @@ class TransactionServiceTest {
     }
 
     @Test
-    void getTransaction_whenTransactionExists_returnsResponse() {
+    void getTransactionDetail_whenTransactionExists_returnsResponse() {
         // Given
         AccountEntity account = AccountEntity.builder()
                 .id(1L)
@@ -101,33 +102,35 @@ class TransactionServiceTest {
                 .createdAt(Instant.parse("2026-01-01T00:00:00Z"))
                 .build();
 
-        TransactionResponse expected = new TransactionResponse(
+        TransactionDetailResponse expected = new TransactionDetailResponse(
                 1L,
                 "DEPOSIT",
                 BigDecimal.valueOf(100.00),
                 BigDecimal.valueOf(100.00),
                 "ref-123",
-                Instant.parse("2026-01-01T00:00:00Z"));
+                Instant.parse("2026-01-01T00:00:00Z"),
+                1L,
+                "EUR");
 
         when(transactionRepository.findById(1L)).thenReturn(Optional.of(transaction));
-        when(transactionMapper.toResponse(transaction)).thenReturn(expected);
+        when(transactionMapper.toDetailResponse(transaction)).thenReturn(expected);
 
         // When
-        TransactionResponse actual = transactionService.getTransaction(1L);
+        TransactionDetailResponse actual = transactionService.getTransactionDetail(1L);
 
         // Then
         assertThat(actual).isEqualTo(expected);
         verify(transactionRepository).findById(1L);
-        verify(transactionMapper).toResponse(transaction);
+        verify(transactionMapper).toDetailResponse(transaction);
     }
 
     @Test
-    void getTransaction_whenTransactionMissing_throwsTransactionNotFoundException() {
+    void getTransactionDetail_whenTransactionMissing_throwsTransactionNotFoundException() {
         // Given
         when(transactionRepository.findById(99L)).thenReturn(Optional.empty());
 
         // When & Then
-        assertThatThrownBy(() -> transactionService.getTransaction(99L))
+        assertThatThrownBy(() -> transactionService.getTransactionDetail(99L))
                 .isInstanceOf(TransactionNotFoundException.class)
                 .hasMessageContaining("Transaction not found: 99");
 

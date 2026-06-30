@@ -24,14 +24,7 @@ export class AccountService {
     }
 
     getTransactions(accountId: number, page = 0, size = 20) {
-        return this.http.get<{
-            content: Transaction[];
-            page: number;
-            size: number;
-            totalElements: number;
-            totalPages: number;
-            last: boolean;
-        }>(
+        return this.http.get<PageResponse<Transaction>>(
             `${this.api}/${accountId}/transactions?page=${page}&size=${size}`
         );
     }

@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs/internal/Observable';
-import { Transaction } from '../models/transaction';
+import { TransactionDetail } from '../models/transaction-detail';
 
 @Injectable({
     providedIn: 'root',
@@ -10,8 +10,8 @@ export class TransactionService {
     private http = inject(HttpClient);
     private readonly api = `api/transactions`;
 
-    getTransaction(id: number): Observable<Transaction> {
-        return this.http.get<Transaction>(
+    getTransactionDetail(id: number): Observable<TransactionDetail> {
+        return this.http.get<TransactionDetail>(
             `${this.api}/${id}`
         );
     }

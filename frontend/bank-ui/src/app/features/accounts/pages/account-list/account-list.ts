@@ -1,33 +1,32 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Router } from '@angular/router';
 
 import { Account } from '../../../../core/models/account';
-import { AccountService } from '../../../../core/services/account';
+import { AccountStore } from '../../store/account.store';
 
 @Component({
     selector: 'app-account-list',
     imports: [
         CommonModule,
-        MatCardModule
+        MatCardModule,
+        MatProgressSpinnerModule
     ],
     templateUrl: './account-list.html',
     styleUrl: './account-list.scss',
 })
 export class AccountList implements OnInit {
-    private accountService = inject(AccountService);
+    readonly store = inject(AccountStore);
     private router = inject(Router);
 
-    accounts = signal<Account[]>([]);
-
     ngOnInit(): void {
-        this.accountService.getAccounts().subscribe(res => {
-            this.accounts.set(res.content);
-        });
+        this.store.loadAccounts();
     }
 
     openAccount(account: Account): void {
+        this.store.selectAccount(account);
         this.router.navigate(['/accounts', account.id]);
     }
 }

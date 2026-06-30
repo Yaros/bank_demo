@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.demo.bank.account.AccountEntity;
 import com.example.demo.bank.common.domain.TransactionType;
 import com.example.demo.bank.common.exception.TransactionNotFoundException;
+import com.example.demo.bank.transaction.dto.TransactionDetailResponse;
 import com.example.demo.bank.transaction.dto.TransactionResponse;
 
 import lombok.RequiredArgsConstructor;
@@ -44,9 +45,9 @@ public class TransactionService {
                 .map(transactionMapper::toResponse);
     }
 
-    public TransactionResponse getTransaction(Long transactionId) {
+    public TransactionDetailResponse getTransactionDetail(Long transactionId) {
 
-        return transactionMapper.toResponse(
+        return transactionMapper.toDetailResponse(
                 transactionRepository.findById(transactionId)
                         .orElseThrow(() -> new TransactionNotFoundException(transactionId)));
     }

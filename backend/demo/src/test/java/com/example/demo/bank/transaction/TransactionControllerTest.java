@@ -17,7 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.example.demo.bank.common.exception.GlobalExceptionHandler;
 import com.example.demo.bank.common.exception.TransactionNotFoundException;
-import com.example.demo.bank.transaction.dto.TransactionResponse;
+import com.example.demo.bank.transaction.dto.TransactionDetailResponse;
 
 @WebMvcTest(TransactionController.class)
 @Import(GlobalExceptionHandler.class)
@@ -30,16 +30,18 @@ class TransactionControllerTest {
     private TransactionService transactionService;
 
     @Test
-    void getTransaction_whenTransactionExists_returnsTransactionResponse() throws Exception {
-        TransactionResponse response = new TransactionResponse(
+    void getTransactionDetail_whenTransactionExists_returnsTransactionResponse() throws Exception {
+        TransactionDetailResponse response = new TransactionDetailResponse(
                 1L,
                 "DEPOSIT",
                 BigDecimal.valueOf(100.00),
                 BigDecimal.valueOf(100.00),
                 "ref-123",
-                Instant.parse("2026-01-01T00:00:00Z"));
+                Instant.parse("2026-01-01T00:00:00Z"),
+                1L,
+                "EUR");
 
-        when(transactionService.getTransaction(1L)).thenReturn(response);
+        when(transactionService.getTransactionDetail(1L)).thenReturn(response);
 
         mockMvc.perform(get("/api/transactions/1"))
                 .andExpect(status().isOk())
@@ -52,8 +54,8 @@ class TransactionControllerTest {
     }
 
     @Test
-    void getTransaction_whenTransactionNotFound_returns404() throws Exception {
-        when(transactionService.getTransaction(99L))
+    void getTransactionDetail_whenTransactionNotFound_returns404() throws Exception {
+        when(transactionService.getTransactionDetail(99L))
                 .thenThrow(new TransactionNotFoundException(99L));
 
         mockMvc.perform(get("/api/transactions/99"))

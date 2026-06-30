@@ -1,5 +1,35 @@
 # BankUi
 
+A simple banking web application built with **Angular 21** and **Spring Boot**.
+
+## Features
+
+### Home Page
+
+* Displays all user accounts
+* Shows account balance and currency
+* Navigate to account details
+
+### Account Overview
+
+* Account information
+* Infinite scrolling transaction history (Spring Page, frontend consumes paginated REST endpoints with infinite scrolling)
+* Historic account balance chart (Chart.js)
+* Export transaction summary as PDF
+* Navigate to transaction details
+
+### Transaction Details
+
+* Complete transaction information
+* Back navigation to the related account
+
+## Technologies
+
+* Angular 21
+* Angular Material
+* NgRx Signal Store
+* Chart.js
+
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.17.
 
 ## Development server

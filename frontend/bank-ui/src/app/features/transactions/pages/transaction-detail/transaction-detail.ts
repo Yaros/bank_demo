@@ -1,12 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 
-import { Transaction } from '../../../../core/models/transaction';
 import { TransactionService } from '../../../../core/services/transaction';
+import { TransactionStore } from '../../../transactions/store/transaction.store';
 
 @Component({
     selector: 'app-transaction-detail',
@@ -21,27 +21,15 @@ import { TransactionService } from '../../../../core/services/transaction';
     styleUrl: './transaction-detail.scss',
 })
 export class TransactionDetail {
-
     private route = inject(ActivatedRoute);
+    readonly store = inject(TransactionStore);
     private transactionService = inject(TransactionService);
-
-    accountId = this.route.snapshot.queryParamMap.get('accountId')!;
-    currency = this.route.snapshot.queryParamMap.get('currency')!;
-
-    transaction = signal<Transaction | null>(null);
-    loading = signal(true);
 
     id!: number;
 
     ngOnInit(): void {
-
         this.id = Number(this.route.snapshot.paramMap.get('id'));
-
-        this.transactionService.getTransaction(this.id)
-            .subscribe(tx => {
-                this.transaction.set(tx);
-                this.loading.set(false);
-            });
+        this.store.loadTransaction(this.id);
     }
 
     downloadPdf(): void {

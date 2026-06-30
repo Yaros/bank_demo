@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.bank.transaction.dto.TransactionDetailResponse;
 import com.example.demo.bank.transaction.dto.TransactionResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,16 +24,16 @@ public class TransactionController {
 
     private final TransactionService transactionService;
 
-    @Operation(summary = "Get transaction by ID", description = "Retrieve a transaction by its unique identifier.")
+    @Operation(summary = "Get transaction detail by ID", description = "Retrieve a transaction detail by its unique identifier.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Transaction found"),
             @ApiResponse(responseCode = "404", description = "Transaction not found")
     })
     @GetMapping("/{id}")
-    public TransactionResponse getTransaction(
+    public TransactionDetailResponse getTransactionDetail(
             @Parameter(name = "id", description = "The unique identifier of the transaction", required = true) 
             @PathVariable("id") Long id) {
-        return transactionService.getTransaction(id);
+        return transactionService.getTransactionDetail(id);
     }
 
     @Operation(summary = "Get transaction report by ID", description = "Retrieve a transaction PDF report by its unique identifier.")

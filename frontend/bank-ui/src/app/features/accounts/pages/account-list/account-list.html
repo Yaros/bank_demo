@@ -1,8 +1,8 @@
 <h1>Accounts</h1>
 
-<p>Count: {{ accounts().length }}</p>
+<p>Count: {{ store.accounts().length }}</p>
 
-<mat-card *ngFor="let account of accounts()" (click)="openAccount(account)" class="account-card">
+<mat-card *ngFor="let account of store.accounts()" (click)="openAccount(account)" class="account-card">
 
     <mat-card-title>
         Account #{{account.id}}
@@ -12,8 +12,12 @@
         <p>
             <strong>Balance:</strong>
             {{ account.balance | currency: account.currency: '' }}
-            {{account.currency}}
+            {{ account.currency }}
         </p>
     </mat-card-content>
 
 </mat-card>
+
+@if (store.loading()) {
+<mat-spinner />
+}

@@ -1,10 +1,10 @@
-@if (loading()) {
+@if (store.loading()) {
 
 <div class="spinner">
     <mat-spinner></mat-spinner>
 </div>
 
-} @else if (transaction(); as tx) {
+} @else if (store.selectedTransactionDetail(); as tx) {
 
 <mat-card>
     <mat-card-title>
@@ -20,14 +20,14 @@
 
         <p>
             <strong>Amount:</strong>
-            {{ tx.amount | currency: currency: ''}}
-            {{currency}}
+            {{ tx.amount | currency: tx.currency: ''}}
+            {{ tx.currency }}
         </p>
 
         <p>
             <strong>Balance after:</strong>
-            {{ tx.balanceAfter | currency: currency: '' }}
-            {{currency}}
+            {{ tx.balanceAfter | currency: tx.currency: '' }}
+            {{ tx.currency }}
         </p>
 
         <p>
@@ -51,8 +51,8 @@
 
 <br>
 
-<button mat-raised-button [routerLink]="['/accounts', accountId]">
-    Back to account #{{ accountId }}
+<button mat-raised-button [routerLink]="['/accounts', tx.accountId]">
+    Back to account #{{ tx.accountId }}
 </button>
 
 }
